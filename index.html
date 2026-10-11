@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Motor Olla - Kalkulator Kredit & Simulasi Cicilan Motor Indonesia</title>
+  <meta name="description" content="Simulasi kredit dan perhitungan cicilan motor Indonesia transparan dengan suku bunga flat resmi di Motor Olla.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Aplikasi (Responsif 100% Penuh) -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="5.5" cy="17.5" r="3.5"/>
+            <circle cx="18.5" cy="17.5" r="3.5"/>
+            <path d="M15 6h-5a2 2 0 0 0-2 2v2"/>
+            <path d="M9 17.5h6"/>
+            <path d="m14 9 3 4.5h2.5"/>
+            <path d="M5.5 17.5 9 10l3-1"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Motor Olla</h1>
+          <p class="brand-tagline">Motore Wong Dewek</p>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="badge-dot"></span>
+        <span>Skema Bunga Flat</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout (Desktop Split-Screen, Tablet & Mobile Fluid) -->
+  <main class="main-layout">
+    
+    <!-- KOLOM KIRI: KATALOG MOTOR -->
+    <section class="catalog-section" id="catalogSection" aria-label="Katalog Motor Indonesia">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Pilih Unit Motor</h2>
+        </div>
+        <span class="catalog-count" id="catalogCount">8 Model Tersedia</span>
+      </div>
+
+      <!-- Filter Kategori Kustom -->
+      <div class="category-filters" role="tablist" aria-label="Filter Kategori">
+        <button type="button" class="filter-chip active" data-category="all" role="tab" aria-selected="true">Semua</button>
+        <button type="button" class="filter-chip" data-category="Matic" role="tab" aria-selected="false">Matic</button>
+        <button type="button" class="filter-chip" data-category="Maxi Scooter" role="tab" aria-selected="false">Maxi</button>
+        <button type="button" class="filter-chip" data-category="Sport" role="tab" aria-selected="false">Sport</button>
+        <button type="button" class="filter-chip" data-category="Electric EV" role="tab" aria-selected="false">Listrik (EV)</button>
+      </div>
+
+      <!-- Grid Kartu Motor -->
+      <div class="motor-grid" id="motorGrid">
+        <!-- Kartu motor dirender via JavaScript -->
+      </div>
+    </section>
+
+    <!-- KOLOM KANAN: FORM KALKULATOR & RINGKASAN HASIL -->
+    <section class="calculator-section" id="calculatorSection" aria-label="Kalkulator Cicilan Motor Olla">
+      
+      <!-- Panel Form Solid -->
+      <div class="calculator-card">
+        
+        <!-- Header Unit Terpilih dengan Thumbnail Foto Mini -->
+        <div class="selected-summary-header" id="selectedSummaryHeader">
+          <div class="unit-left-preview">
+            <div class="thumb-mini-wrapper">
+              <img id="headerMotorThumb" src="assets/images/beat-black.png" alt="Preview Unit Terpilih" class="unit-thumb-mini">
+            </div>
+            <div class="unit-info">
+              <span class="unit-badge" id="headerCategory">Matic</span>
+              <h3 class="unit-name" id="headerMotorName">Honda BeAT Deluxe</h3>
+              <p class="unit-color-active">Warna: <strong id="headerColorName">Deluxe Matte Black</strong></p>
+            </div>
+          </div>
+          <div class="unit-price-box">
+            <span class="price-label">Harga</span>
+            <span class="price-value" id="headerPriceOTR">Rp 18.900.000</span>
+          </div>
+        </div>
+
+        <!-- Form Simulasi Kredit -->
+        <form id="creditForm" class="credit-form" onsubmit="return false;">
+          
+          <!-- Input Uang Muka (DP) -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="inputDP" class="form-label">Nominal Uang Muka (DP)</label>
+              <span class="min-dp-hint" id="minDPHint">Min DP: Rp 2.835.000 (15%)</span>
+            </div>
+            
+            <div class="input-currency-wrapper">
+              <span class="currency-prefix">Rp</span>
+              <input 
+                type="text" 
+                id="inputDP" 
+                name="inputDP" 
+                class="form-input" 
+                placeholder="Masukkan nominal DP" 
+                inputmode="numeric" 
+                autocomplete="off"
+                aria-describedby="dpError minDPHint"
+              >
+            </div>
+            <div class="error-message" id="dpError" role="alert" style="display: none;"></div>
+
+            <!-- Quick DP Chips -->
+            <div class="quick-dp-row">
+              <span class="quick-dp-title">Pilihan Cepat:</span>
+              <div class="quick-dp-buttons" id="quickDPButtons">
+                <button type="button" class="quick-btn" data-percent="20">20%</button>
+                <button type="button" class="quick-btn" data-percent="30">30%</button>
+                <button type="button" class="quick-btn" data-percent="40">40%</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pilihan Tenor (Skema Leasing Indonesia) -->
+          <div class="form-group">
+            <label class="form-label">Jangka Waktu Kredit (Tenor)</label>
+            <div class="tenor-grid" id="tenorContainer" role="radiogroup" aria-label="Pilihan Tenor Cicilan">
+              
+              <label class="tenor-option">
+                <input type="radio" name="tenor" value="11" checked>
+                <div class="tenor-box">
+                  <span class="tenor-months">11 Bulan</span>
+                  <span class="tenor-rate">Bunga 7.0%/th</span>
+                </div>
+              </label>
+
+              <label class="tenor-option">
+                <input type="radio" name="tenor" value="23">
+                <div class="tenor-box">
+                  <span class="tenor-months">23 Bulan</span>
+                  <span class="tenor-rate">Bunga 8.0%/th</span>
+                </div>
+              </label>
+
+              <label class="tenor-option">
+                <input type="radio" name="tenor" value="29">
+                <div class="tenor-box">
+                  <span class="tenor-months">29 Bulan</span>
+                  <span class="tenor-rate">Bunga 9.5%/th</span>
+                </div>
+              </label>
+
+              <label class="tenor-option">
+                <input type="radio" name="tenor" value="35">
+                <div class="tenor-box">
+                  <span class="tenor-months">35 Bulan</span>
+                  <span class="tenor-rate">Bunga 9.5%/th</span>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- Tombol Hitung Simulasi -->
+          <button type="button" id="btnHitung" class="btn-calculate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <rect width="16" height="20" x="4" y="2" rx="2"/>
+              <line x1="8" x2="16" y1="6" y2="6"/>
+              <line x1="16" x2="16" y1="14"/>
+              <path d="M16 10h.01"/>
+              <path d="M12 10h.01"/>
+              <path d="M8 10h.01"/>
+              <path d="M12 14h.01"/>
+              <path d="M8 14h.01"/>
+              <path d="M12 18h.01"/>
+              <path d="M8 18h.01"/>
+            </svg>
+            Hitung Simulasi Cicilan
+          </button>
+
+        </form>
+      </div>
+
+      <!-- RESULTS OVERVIEW CARD (Aksen Glassmorphism) -->
+      <div class="results-card glass-card" id="resultsCard">
+        <div class="results-header">
+          <span class="results-badge">Estimasi Angsuran</span>
+          <span class="results-tenor-badge" id="resTenorBadge">11 Bulan</span>
+        </div>
+
+        <div class="monthly-installment-display">
+          <span class="monthly-label">Cicilan per Bulan</span>
+          <div class="monthly-amount" id="resMonthlyInstallment">Rp 1.462.745</div>
+          <span class="monthly-subtext">*Perhitungan bunga flat transparan resmi tanpa biaya tersembunyi</span>
+        </div>
+
+        <!-- Grid Rincian Kredit -->
+        <div class="loan-breakdown-grid">
+          <div class="breakdown-item">
+            <span class="item-label">Pokok Pinjaman</span>
+            <span class="item-val" id="resLoanPrincipal">Rp 15.120.000</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="item-label">Suku Bunga Flat</span>
+            <span class="item-val" id="resInterestRate">7.0% / th</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="item-label">Total Beban Bunga</span>
+            <span class="item-val text-accent" id="resTotalInterest">Rp 970.200</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="item-label">Total Utang (Pokok + Bunga)</span>
+            <span class="item-val font-semibold" id="resTotalLoan">Rp 16.090.200</span>
+          </div>
+        </div>
+
+        <!-- KARTU PEMICU MODAL JADWAL ANGSURAN (Opsi C Sesuai Pilihan Pengguna) -->
+        <div class="schedule-cta-card">
+          <div class="schedule-cta-info">
+            <div class="schedule-cta-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="accordion-icon">
+                <path d="M8 2v4"/>
+                <path d="M16 2v4"/>
+                <rect width="18" height="18" x="3" y="4" rx="2"/>
+                <path d="M3 10h18"/>
+                <path d="m9 16 2 2 4-4"/>
+              </svg>
+              <span>Jadwal Angsuran Pembayaran</span>
+            </div>
+            <span class="schedule-cta-desc">Rincian pokok & bunga (<span id="ctaTotalMonths">11</span> Bulan)</span>
+          </div>
+          <button type="button" class="btn-open-modal" id="btnOpenScheduleModal">
+            <span>Buka Jadwal Lengkap</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL DIALOG JADWAL ANGSURAN LENGKAP (Opsi C Terpilih) -->
+  <div class="modal-backdrop" id="scheduleModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display: none;">
+    <div class="modal-dialog">
+      
+      <!-- Header Modal -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span class="modal-badge">Rencana Angsuran</span>
+          <h3 class="modal-title" id="modalTitle">Jadwal Rincian Cicilan Bulanan</h3>
+          <p class="modal-subtitle" id="modalSubtitle">Unit: Honda BeAT Deluxe • Tenor: 11 Bulan</p>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseScheduleModal" aria-label="Tutup Jadwal Angsuran">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Banner Ringkasan Angka di Modal -->
+      <div class="modal-summary-banner">
+        <div class="modal-summary-pill">
+          <span class="pill-lbl">Cicilan Tetap / Bulan:</span>
+          <strong class="pill-val text-accent" id="modalMonthlyInstallment">Rp 1.462.745</strong>
+        </div>
+        <div class="modal-summary-pill">
+          <span class="pill-lbl">Pokok Pinjaman:</span>
+          <strong class="pill-val" id="modalLoanPrincipal">Rp 15.120.000</strong>
+        </div>
+        <div class="modal-summary-pill">
+          <span class="pill-lbl">Total Utang:</span>
+          <strong class="pill-val" id="modalTotalLoan">Rp 16.090.200</strong>
+        </div>
+      </div>
+
+      <!-- Tabel Jadwal Rincian Hasil Perulangan for -->
+      <div class="modal-body">
+        <div class="table-responsive modal-table-wrapper">
+          <table class="schedule-table" aria-label="Tabel Jadwal Angsuran Kredit">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">Bulan Ke</th>
+                <th scope="col">Angsuran Pokok</th>
+                <th scope="col">Bunga</th>
+                <th scope="col">Total Angsuran</th>
+                <th scope="col">Sisa Pinjaman</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTableBody">
+              <!-- Baris jadwal di-generate langsung oleh loop for di JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer Modal -->
+      <div class="modal-footer">
+        <span class="modal-footer-note">*Dihasilkan oleh struktur perulangan (for loop) sesuai standar akademik</span>
+        <button type="button" class="btn-modal-close-action" id="btnModalCloseAction">Tutup Rincian</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sticky Bottom Bar untuk Pengguna Mobile & Tablet (100% Full-Width) -->
+  <div class="mobile-sticky-bar" id="mobileStickyBar">
+    <div class="sticky-bar-content">
+      <div class="sticky-unit-info">
+        <span class="sticky-unit-name" id="stickyUnitName">Honda BeAT</span>
+        <span class="sticky-monthly-val" id="stickyMonthlyVal">Rp 1.462.745/bln</span>
+      </div>
+      <div class="sticky-actions">
+        <button type="button" class="btn-sticky-schedule" id="btnStickySchedule">
+          <span>Jadwal</span>
+        </button>
+        <button type="button" class="btn-jump-calc" id="btnJumpCalc">
+          <span>Atur Kredit</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Standar Akademik -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>© 2026 Motor Olla — Created by Aris Maulana</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
